@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+
+<body>
+    <input type="text" id="id" placeholder="1~438 사이의 숫자를 입력해주세요">
+    <button id="btn-search">코스 찾기</button>
+    <div id="render-box"></div>
+
+    <script>
+        $("#btn-search").click(() => {
+            download();
+        })
+
+        let download = async () => {
+            let id = $("#id").val();
+            let response = await fetch(`/download?id=${id}`);
+            let responseParse = await response.json();
+            let item = responseParse.response.body.items.item[0];
+            console.log(item);
+            $("#render-box").append(render(item));
+        }
+
+        let render = (item) => {
+            let sky = item.sky;
+            switch (sky) {
+                case 1: sky = "맑음";
+                    break;
+                case 2: sky = "구름";
+                    break;
+                case 3: sky = "흐림";
+                    break;
+                case 4: sky = "비";
+                    break;
+                case 5: sky = "소나기";
+                    break;
+                case 6: sky = "비눈";
+                    break;
+                case 7: sky = "눈비";
+                    break;
+                case 8: sky = "눈";
+                    break;
+            }
+            return `
+            코스명 : ${item.courseName}
+            <ul>
+                <li>지역 : ${item.courseAreaName}${item.spotAreaName}</li>
+                <li>관광지명 : ${item.spotName}</li>
+                <li>예보시간 : ${item.tm}</li>
+                <li>하늘상태 : ${sky}</li>
+                <li>강수량 : ${item.rn}</li>
+            </ul>
+            `
+        }
+    </script>
+</body>
+
+</html>
